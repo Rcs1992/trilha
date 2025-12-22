@@ -101,6 +101,23 @@
       line-height: 1.4;
     }
 
+    #status {
+  min-height: 20px;
+  font-weight: 500;
+}
+
+.status-loading {
+  color: #ffeb3b;
+}
+
+.status-success {
+  color: #b2ff59;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
     footer {
       text-align: center;
       font-size: 0.75rem;
@@ -142,6 +159,7 @@
 
     <input id="item" placeholder="O que você vai levar?" />
     <button onclick="adicionar()">Adicionar 🎁</button>
+    <div id="status" style="text-align:center; font-size:0.9rem; margin-top:5px;"></div>
   </div>
 
   <div class="lista" id="lista"></div>
@@ -152,41 +170,53 @@
 <script>
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykpQxiU1K0ixS26whbkE829BksVLfQSNmuAF0HO4qdOnnrdSJQ0uO4l_awFhHMPvLVwQ/exec';
 
-  async function carregar() {
-    const res = await fetch(SCRIPT_URL);
-    const dados = await res.json();
-
-    const dias = ['Segunda','Terça','Quarta','Quinta','Sexta'];
-    let html = '';
-
-    dias.forEach(dia => {
-      html += `<div class="dia"><h3>${dia}</h3>`;
-      dados.filter(l => l.dia === dia).forEach(l => {
-        html += `<div class="item">• <b>${l.nome}</b>: ${l.item}</div>`;
-      });
-      html += '</div>';
-    });
-
-    document.getElementById('lista').innerHTML = html;
-  }
+  let enviando = false;
 
   async function adicionar() {
+    if (enviando) return; // bloqueia múltiplos cliques
+
     const nome = document.getElementById('nome').value.trim();
     const dia = document.getElementById('dia').value;
     const item = document.getElementById('item').value.trim();
+
+    const status = document.getElementById('status');
+    const botao = document.getElementById('btnAdicionar');
 
     if (!nome || !item) {
       alert('Preencha nome e item 😊');
       return;
     }
 
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ nome, dia, item })
-    });
+    enviando = true;
+    botao.disabled = true;
+    status.className = 'status-loading';
+    status.innerText = '⏳ Adicionando...';
 
-    document.getElementById('item').value = '';
-    carregar();
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ nome, dia, item })
+      });
+
+      status.className = 'status-success';
+      status.innerText = '✅ Adicionado com sucesso!';
+
+      document.getElementById('item').value = '';
+
+      await carregar();
+
+      // limpa a mensagem depois de 2s
+      setTimeout(() => {
+        status.innerText = '';
+      }, 2000);
+
+    } catch (e) {
+      status.className = '';
+      status.innerText = '❌ Erro ao adicionar. Tente novamente.';
+    } finally {
+      enviando = false;
+      botao.disabled = false;
+    }
   }
 
   carregar();
