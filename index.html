@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎄 Lista de Café da Manhã 🎄</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(180deg, #b30000, #006400);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    h1 span {
+      font-size: 1.5rem;
+    }
+
+    .form {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    select, input, button {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      background: #ffcc00;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .lista {
+      background: rgba(0,0,0,0.2);
+      border-radius: 15px;
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .dia {
+      margin-bottom: 10px;
+    }
+
+    .dia h3 {
+      margin: 5px 0;
+      color: #ffeb3b;
+    }
+
+    .item {
+      font-size: 0.9rem;
+      margin-left: 10px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      margin-top: 10px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>🎄 Café da Manhã 🎄<br><span>Compartilhado</span></h1>
+
+  <div class="form">
+    <input id="nome" placeholder="Seu nome" />
+
+    <select id="dia">
+      <option value="Segunda">Segunda-feira</option>
+      <option value="Terça">Terça-feira</option>
+      <option value="Quarta">Quarta-feira</option>
+      <option value="Quinta">Quinta-feira</option>
+      <option value="Sexta">Sexta-feira</option>
+    </select>
+
+    <input id="item" placeholder="O que você vai levar?" />
+    <button onclick="adicionar()">Adicionar 🎁</button>
+  </div>
+
+  <div class="lista" id="lista"></div>
+
+  <footer>Espírito natalino + café quentinho ☕</footer>
+</div>
+
+<script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykpQxiU1K0ixS26whbkE829BksVLfQSNmuAF0HO4qdOnnrdSJQ0uO4l_awFhHMPvLVwQ/exec';
+
+  async function carregar() {
+    const res = await fetch(SCRIPT_URL);
+    const dados = await res.json();
+
+    const dias = ['Segunda','Terça','Quarta','Quinta','Sexta'];
+    let html = '';
+
+    dias.forEach(dia => {
+      html += `<div class="dia"><h3>${dia}</h3>`;
+      dados.filter(l => l.dia === dia).forEach(l => {
+        html += `<div class="item">• <b>${l.nome}</b>: ${l.item}</div>`;
+      });
+      html += '</div>';
+    });
+
+    document.getElementById('lista').innerHTML = html;
+  }
+
+  async function adicionar() {
+    const nome = document.getElementById('nome').value;
+    const dia = document.getElementById('dia').value;
+    const item = document.getElementById('item').value;
+
+    if (!nome || !item) {
+      alert('Preencha nome e item 😊');
+      return;
+    }
+
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ nome, dia, item })
+    });
+
+    document.getElementById('item').value = '';
+    carregar();
+  }
+
+  carregar();
+</script>
+
+</body>
+</html>
