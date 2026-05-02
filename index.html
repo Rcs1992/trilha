@@ -1,217 +1,1040 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎄 Lista de Café da Manhã 🎄</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Tutoriais</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Fonte moderna do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
 
-  <style>
-    * { box-sizing: border-box; }
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-bg: #151823;
+            --sidebar-hover: #1e2133;
+            --sidebar-active: #252a3e;
+            --accent: #6c8cff;
+            --accent-light: #839dff;
+            --accent-glow: rgba(108, 140, 255, 0.25);
+            --text-light: #c5c9d8;
+            --text-muted: #8b8fa3;
+            --text-white: #eef0f6;
+            --main-bg: #f0f2f7;
+            --card-bg: #ffffff;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 20px rgba(0, 0, 0, 0.05);
+            --border-radius: 10px;
+            --transition-speed: 0.25s;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
 
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(180deg, #b30000, #006400);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      padding: 15px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .card {
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 20px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
+        html,
+        body {
+            height: 100%;
+            font-family: var(--font-family);
+            background: var(--main-bg);
+            color: #2c2f3a;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 15px;
-      font-size: 1.4rem;
-      line-height: 1.3;
-    }
+        /* ========== LAYOUT PRINCIPAL ========== */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
 
-    h1 span {
-      font-size: 1.1rem;
-      font-weight: 300;
-    }
+        /* ========== SIDEBAR (ABA LATERAL ESQUERDA) ========== */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+            z-index: 10;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+            user-select: none;
+        }
 
-    .form {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+        /* Cabeçalho da sidebar */
+        .sidebar-header {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
 
-    select, input, button {
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      font-size: 16px;
-      width: 100%;
-    }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-    input::placeholder { color: #555; }
+        .sidebar-logo .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            background: linear-gradient(135deg, var(--accent), #4a6cf7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 14px var(--accent-glow);
+            flex-shrink: 0;
+        }
 
-    button {
-      background: #ffcc00;
-      font-weight: bold;
-      cursor: pointer;
-    }
+        .sidebar-logo .logo-text h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-white);
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+        .sidebar-logo .logo-text span {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
 
-    #status {
-      min-height: 20px;
-      text-align: center;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
+        /* Navegação (botões) */
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
 
-    .status-loading { color: #ffeb3b; }
-    .status-success { color: #b2ff59; }
-    .status-error { color: #ff8a80; }
+            /* Scrollbar estilizada */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+        }
 
-    .lista {
-      background: rgba(0,0,0,0.2);
-      border-radius: 15px;
-      padding: 15px;
-      max-height: 40vh;
-      overflow-y: auto;
-      margin-top: 15px;
-    }
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
 
-    .dia { margin-bottom: 12px; }
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 8px 0;
+        }
 
-    .dia h3 {
-      margin: 8px 0;
-      color: #ffeb3b;
-      font-size: 1rem;
-    }
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
 
-    .item {
-      font-size: 0.9rem;
-      margin-left: 10px;
-      line-height: 1.4;
-    }
+        .sidebar-nav::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-    footer {
-      text-align: center;
-      font-size: 0.75rem;
-      margin-top: 15px;
-      opacity: 0.85;
-    }
-  </style>
+        /* Separador de seção */
+        .nav-section-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding: 16px 10px 6px;
+        }
+
+        /* Botões da navegação */
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 13px 15px;
+            background: transparent;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            color: var(--text-light);
+            font-family: var(--font-family);
+            font-size: 13.5px;
+            font-weight: 500;
+            text-align: left;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            outline: none;
+            letter-spacing: -0.1px;
+            line-height: 1.3;
+        }
+
+        .nav-btn:hover {
+            background: var(--sidebar-hover);
+            color: #ffffff;
+            transform: translateX(2px);
+        }
+
+        .nav-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: -2px;
+            border-radius: 9px;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.985);
+            transition: transform 0.1s ease;
+        }
+
+        /* Botão ativo */
+        .nav-btn.active {
+            background: var(--sidebar-active);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: inset 3px 0 0 var(--accent);
+            border-radius: 9px 9px 9px 9px;
+        }
+
+        .nav-btn.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: var(--accent);
+            border-radius: 0 3px 3px 0;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        /* Ícone do botão */
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            transition: all var(--transition-speed) ease;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-btn.active .btn-icon {
+            background: rgba(108, 140, 255, 0.2);
+        }
+
+        /* Badge de tipo */
+        .btn-badge {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-left: auto;
+            flex-shrink: 0;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .badge-video {
+            background: rgba(255, 140, 100, 0.18);
+            color: #ffa07a;
+        }
+        .badge-pdf {
+            background: rgba(255, 100, 100, 0.18);
+            color: #ff7070;
+        }
+        .badge-youtube {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff6b6b;
+        }
+
+        .nav-btn.active .badge-video {
+            background: rgba(255, 140, 100, 0.3);
+        }
+        .nav-btn.active .badge-pdf {
+            background: rgba(255, 100, 100, 0.3);
+        }
+        .nav-btn.active .badge-youtube {
+            background: rgba(255, 80, 80, 0.32);
+        }
+
+        /* Rodapé da sidebar */
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer p {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .sidebar-footer .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #4ade80;
+            margin-right: 5px;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
+            }
+            50% {
+                opacity: 0.7;
+                box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+            }
+        }
+
+        /* ========== CONTEÚDO PRINCIPAL (LADO DIREITO) ========== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--main-bg);
+        }
+
+        /* Barra superior do conteúdo */
+        .content-topbar {
+            padding: 18px 28px;
+            background: var(--card-bg);
+            border-bottom: 1px solid #e8eaf0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+            min-height: 62px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .content-topbar .current-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            background: #f0f3fa;
+        }
+
+        .content-topbar .current-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e2233;
+            letter-spacing: -0.2px;
+        }
+
+        .content-topbar .current-type {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #eef1f8;
+            color: #5a6480;
+            margin-left: auto;
+        }
+
+        /* Área de visualização */
+        .content-viewer-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            scrollbar-width: thin;
+            scrollbar-color: #ccd0d8 transparent;
+        }
+
+        .content-viewer-area::-webkit-scrollbar {
+            width: 5px;
+        }
+        .content-viewer-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .content-viewer-area::-webkit-scrollbar-thumb {
+            background: #ccd0d8;
+            border-radius: 10px;
+        }
+
+        /* Placeholder (quando nada está selecionado) */
+        .placeholder {
+            text-align: center;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .placeholder-icon {
+            font-size: 72px;
+            margin-bottom: 18px;
+            animation: float 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-14px);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .placeholder h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e2233;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+
+        .placeholder p {
+            font-size: 14px;
+            color: #7d8499;
+            max-width: 360px;
+            line-height: 1.6;
+        }
+
+        /* Cards de dica no placeholder */
+        .placeholder-hints {
+            display: flex;
+            gap: 14px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hint-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px 20px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            min-width: 100px;
+            flex: 1;
+            max-width: 150px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hint-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+        }
+
+        .hint-card .hint-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+        .hint-card span {
+            font-size: 11px;
+            font-weight: 500;
+            color: #5a6480;
+        }
+
+        /* Container do viewer (vídeo ou PDF) */
+        .viewer-container {
+            width: 100%;
+            max-width: 960px;
+            background: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            animation: fadeInUp 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .viewer-container video {
+            width: 100%;
+            display: block;
+            border-radius: 14px 14px 0 0;
+            background: #000;
+            max-height: 60vh;
+            object-fit: contain;
+        }
+
+        .viewer-container iframe {
+            width: 100%;
+            border: none;
+            display: block;
+            min-height: 70vh;
+            height: 75vh;
+            border-radius: 14px;
+        }
+
+        .viewer-container .video-info-bar {
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #5a6480;
+            border-top: 1px solid #eef0f5;
+            background: #fafbfc;
+            border-radius: 0 0 14px 14px;
+        }
+
+        .viewer-container .video-info-bar .info-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse-dot 2s infinite;
+        }
+
+        /* Estado de erro */
+        .error-state {
+            text-align: center;
+            padding: 40px;
+            color: #c0392b;
+        }
+        .error-state .error-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        /* ========== RESPONSIVIDADE ========== */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                max-height: 45vh;
+                flex-shrink: 0;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            .sidebar-nav {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                overflow-y: hidden;
+                gap: 6px;
+                padding: 10px 10px;
+            }
+
+            .nav-btn {
+                flex-shrink: 0;
+                width: auto;
+                padding: 10px 14px;
+                gap: 8px;
+                font-size: 12px;
+                border-radius: 20px;
+                white-space: nowrap;
+            }
+
+            .nav-btn.active {
+                box-shadow: none;
+                border-radius: 20px;
+            }
+            .nav-btn.active::before {
+                display: none;
+            }
+            .nav-btn:hover {
+                transform: none;
+            }
+
+            .btn-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 13px;
+                border-radius: 6px;
+            }
+            .btn-badge {
+                font-size: 8px;
+                padding: 2px 6px;
+            }
+            .nav-section-label {
+                display: none;
+            }
+            .sidebar-header {
+                padding: 14px 16px;
+            }
+            .sidebar-logo .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+                border-radius: 8px;
+            }
+            .sidebar-logo .logo-text h2 {
+                font-size: 15px;
+            }
+            .sidebar-footer {
+                display: none;
+            }
+
+            .main-content {
+                height: auto;
+                flex: 1;
+                min-height: 55vh;
+            }
+            .content-viewer-area {
+                padding: 16px;
+            }
+            .viewer-container iframe {
+                min-height: 50vh;
+                height: 55vh;
+            }
+            .viewer-container video {
+                max-height: 40vh;
+            }
+            .content-topbar {
+                padding: 12px 16px;
+                min-height: 48px;
+                gap: 8px;
+            }
+            .content-topbar .current-title {
+                font-size: 14px;
+            }
+            .placeholder-icon {
+                font-size: 48px;
+            }
+            .placeholder h3 {
+                font-size: 18px;
+            }
+            .placeholder-hints {
+                gap: 8px;
+                margin-top: 16px;
+            }
+            .hint-card {
+                padding: 12px 14px;
+                min-width: 70px;
+                max-width: 100px;
+            }
+            .hint-card .hint-icon {
+                font-size: 22px;
+            }
+            .hint-card span {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .sidebar-nav {
+                gap: 4px;
+                padding: 8px 6px;
+            }
+            .nav-btn {
+                padding: 8px 10px;
+                font-size: 11px;
+                gap: 5px;
+                border-radius: 16px;
+            }
+            .btn-icon {
+                width: 24px;
+                height: 24px;
+                font-size: 11px;
+            }
+            .btn-badge {
+                font-size: 7px;
+                padding: 2px 5px;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="card">
-  <h1>🎄 Café da Manhã 🎄<br><span>Compartilhado</span></h1>
+    <div class="app-container">
 
-  <div class="form">
-    <input id="nome" placeholder="Seu nome" />
+        <!-- ==================== SIDEBAR (ABA LATERAL ESQUERDA) ==================== -->
+        <aside class="sidebar">
+            <!-- Cabeçalho -->
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">📚</div>
+                    <div class="logo-text">
+                        <h2>Tutoriais</h2>
+                        <span>Central de Aprendizado</span>
+                    </div>
+                </div>
+            </div>
 
-    <select id="dia">
-      <option value="Segunda">Segunda-feira</option>
-      <option value="Terça">Terça-feira</option>
-      <option value="Quarta">Quarta-feira</option>
-      <option value="Quinta">Quinta-feira</option>
-      <option value="Sexta">Sexta-feira</option>
-    </select>
+            <!-- Navegação com botões -->
+            <nav class="sidebar-nav" id="sidebarNav">
 
-    <input id="item" placeholder="O que você vai levar?" />
+                <!-- ─── SEÇÃO: VÍDEOS LOCAIS ─── -->
+                <div class="nav-section-label">🎬 Vídeos Tutoriais</div>
 
-    <button id="btnAdicionar" onclick="adicionar()">Adicionar 🎁</button>
-    <div id="status"></div>
-  </div>
+                <!-- Botão 1: Vídeo local -->
+                <button class="nav-btn"
+                data-type="video"
+                data-file="videos/tutorial-introducao.mp4"
+                data-title="Tutorial de Introdução"
+                data-icon="🎥"
+                aria-label="Abrir tutorial de introdução em vídeo">
+                <span class="btn-icon">🎥</span>
+                <span class="btn-text">Introdução ao Sistema</span>
+                <span class="btn-badge badge-video">MP4</span>
+            </button>
 
-  <div class="lista" id="lista"></div>
+            <!-- Botão 2: Vídeo local -->
+            <button class="nav-btn"
+            data-type="video"
+            data-file="videos/tutorial-avancado.mp4"
+            data-title="Tutorial Avançado"
+            data-icon="🎞️"
+            aria-label="Abrir tutorial avançado em vídeo">
+            <span class="btn-icon">🎞️</span>
+            <span class="btn-text">Funcionalidades Avançadas</span>
+            <span class="btn-badge badge-video">MP4</span>
+        </button>
 
-  <footer>Espírito natalino + café quentinho ☕</footer>
+        <!-- ─── SEÇÃO: YOUTUBE ─── -->
+        <div class="nav-section-label">▶ YouTube Embeds</div>
+
+        <!-- Botão 3: YouTube embed (use o ID do vídeo) -->
+        <button class="nav-btn"
+        data-type="youtube"
+        data-file="dQw4w9WgXcQ"
+        data-title="Demonstração no YouTube"
+        data-icon="▶️"
+        aria-label="Abrir demonstração do YouTube">
+        <span class="btn-icon">▶️</span>
+        <span class="btn-text">Demo Completa (YouTube)</span>
+        <span class="btn-badge badge-youtube">YT</span>
+    </button>
+
+    <!-- ─── SEÇÃO: PDFs ─── -->
+    <div class="nav-section-label">📄 Documentos PDF</div>
+
+    <!-- Botão 4: PDF -->
+    <button class="nav-btn"
+    data-type="pdf"
+    data-file="pdfs/guia-rapido.pdf"
+    data-title="Guia Rápido em PDF"
+    data-icon="📖"
+    aria-label="Abrir guia rápido em PDF">
+    <span class="btn-icon">📖</span>
+    <span class="btn-text">Guia Rápido de Referência</span>
+    <span class="btn-badge badge-pdf">PDF</span>
+</button>
+
+<!-- Botão 5: PDF -->
+<button class="nav-btn"
+data-type="pdf"
+data-file="pdfs/manual-completo.pdf"
+data-title="Manual Completo"
+data-icon="📘"
+aria-label="Abrir manual completo em PDF">
+<span class="btn-icon">📘</span>
+<span class="btn-text">Manual Completo do Usuário</span>
+<span class="btn-badge badge-pdf">PDF</span>
+</button>
+
+<!-- 
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  COMO ADICIONAR MAIS BOTÕES:                                ║
+    ║                                                            ║
+    ║  Copie e cole um dos modelos acima, ajustando:             ║
+    ║  • data-type:  "video" | "pdf" | "youtube"                 ║
+    ║  • data-file:  caminho do arquivo OU ID do YouTube         ║
+    ║  • data-title: título exibido no topo da página            ║
+    ║  • data-icon:  emoji para o ícone do botão                 ║
+    ║  • btn-text:   texto visível no botão                      ║
+    ║  • btn-badge:  classe badge-video | badge-pdf | badge-youtube║
+    ╚══════════════════════════════════════════════════════════════╝
+-->
+
+</nav>
+
+<!-- Rodapé -->
+<div class="sidebar-footer">
+    <p><span class="dot"></span> Tutoriais disponíveis</p>
+</div>
+</aside>
+
+<!-- ==================== CONTEÚDO PRINCIPAL (LADO DIREITO) ==================== -->
+<main class="main-content">
+    <!-- Barra superior -->
+    <div class="content-topbar" id="contentTopbar">
+        <div class="current-icon" id="currentIcon">📂</div>
+        <span class="current-title" id="currentTitle">Selecione um tutorial</span>
+        <span class="current-type" id="currentType" style="display:none;"></span>
+    </div>
+
+    <!-- Área de visualização -->
+    <div class="content-viewer-area" id="contentViewerArea">
+        <!-- Placeholder inicial -->
+        <div class="placeholder" id="placeholder">
+            <div class="placeholder-icon">👈</div>
+            <h3>Bem-vindo à Central de Tutoriais</h3>
+            <p>Selecione um item na barra lateral esquerda para visualizar vídeos, documentos PDF ou demonstrações.</p>
+            <div class="placeholder-hints">
+                <div class="hint-card">
+                    <div class="hint-icon">🎬</div>
+                    <span>Vídeos Tutoriais</span>
+                </div>
+                <div class="hint-card">
+                    <div class="hint-icon">📄</div>
+                    <span>Guias em PDF</span>
+                </div>
+                <div class="hint-card">
+                    <div class="hint-icon">▶️</div>
+                    <span>YouTube Embeds</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container do viewer (injetado dinamicamente) -->
+        <div id="viewerContainer" style="display:none; width:100%; max-width:960px;"></div>
+    </div>
+</main>
 </div>
 
 <script>
-  const SCRIPT_URL =
-    'https://script.google.com/macros/s/AKfycbykpQxiU1K0ixS26whbkE829BksVLfQSNmuAF0HO4qdOnnrdSJQ0uO4l_awFhHMPvLVwQ/exec';
+    (function() {
+        // ──────────────── ELEMENTOS DO DOM ────────────────
+        const sidebarNav = document.getElementById('sidebarNav');
+        const navButtons = sidebarNav.querySelectorAll('.nav-btn');
+        const placeholder = document.getElementById('placeholder');
+        const viewerContainer = document.getElementById('viewerContainer');
+        const currentIcon = document.getElementById('currentIcon');
+        const currentTitle = document.getElementById('currentTitle');
+        const currentType = document.getElementById('currentType');
+        const contentViewerArea = document.getElementById('contentViewerArea');
 
-  let enviando = false;
+        let activeButton = null;
 
-  async function carregar() {
-    const res = await fetch(SCRIPT_URL);
-    const dados = await res.json();
+        // ──────────────── MAPA DE ÍCONES POR TIPO ────────────────
+        const typeIcons = {
+            'video': '🎬',
+            'pdf': '📄',
+            'youtube': '▶️'
+        };
 
-    const dias = ['Segunda','Terça','Quarta','Quinta','Sexta'];
-    let html = '';
+        const typeLabels = {
+            'video': 'Vídeo Tutorial',
+            'pdf': 'Documento PDF',
+            'youtube': 'YouTube Embed'
+        };
 
-    dias.forEach(dia => {
-      html += `<div class="dia"><h3>${dia}</h3>`;
-      dados.filter(l => l.dia === dia).forEach(l => {
-        html += `<div class="item">• <b>${l.nome}</b>: ${l.item}</div>`;
-      });
-      html += `</div>`;
-    });
+        // ──────────────── FUNÇÃO: REMOVER CONTEÚDO ATUAL ────────────────
+        function clearViewer() {
+            viewerContainer.innerHTML = '';
+            viewerContainer.style.display = 'none';
+        }
 
-    document.getElementById('lista').innerHTML = html;
-  }
+        // ──────────────── FUNÇÃO: MOSTRAR PLACEHOLDER ────────────────
+        function showPlaceholder() {
+            clearViewer();
+            placeholder.style.display = '';
+            currentIcon.textContent = '📂';
+            currentTitle.textContent = 'Selecione um tutorial';
+            currentType.style.display = 'none';
+            // Remove active de todos os botões
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            activeButton = null;
+            // Reanima o placeholder
+            placeholder.style.animation = 'none';
+            placeholder.offsetHeight; // trigger reflow
+            placeholder.style.animation = 'fadeInUp 0.5s ease';
+        }
 
-  async function adicionar() {
-    if (enviando) return;
+        // ──────────────── FUNÇÃO: RENDERIZAR CONTEÚDO ────────────────
+        function renderContent(type, filePath, title, icon) {
+            clearViewer();
+            placeholder.style.display = 'none';
+            viewerContainer.style.display = '';
 
-    const nome = document.getElementById('nome').value.trim();
-    const dia = document.getElementById('dia').value;
-    const item = document.getElementById('item').value.trim();
+            // Atualiza topbar
+            currentIcon.textContent = icon || typeIcons[type] || '📂';
+            currentTitle.textContent = title || 'Tutorial';
+            currentType.textContent = typeLabels[type] || type.toUpperCase();
+            currentType.style.display = '';
 
-    const status = document.getElementById('status');
-    const botao = document.getElementById('btnAdicionar');
+            // Cria o container visual
+            const container = document.createElement('div');
+            container.className = 'viewer-container';
 
-    if (!nome || !item) {
-      alert('Preencha nome e item 😊');
-      return;
-    }
+            if (type === 'video') {
+                // ─── VÍDEO LOCAL ────────────────────────────
+                const videoEl = document.createElement('video');
+                videoEl.controls = true;
+                videoEl.playsInline = true;
+                videoEl.preload = 'metadata';
+                videoEl.style.cssText = 'width:100%;display:block;border-radius:14px 14px 0 0;background:#000;max-height:60vh;object-fit:contain;';
 
-    enviando = true;
-    botao.disabled = true;
-    status.className = 'status-loading';
-    status.innerText = '⏳ Adicionando...';
+                const sourceEl = document.createElement('source');
+                sourceEl.src = filePath;
+                sourceEl.type = 'video/mp4';
+                videoEl.appendChild(sourceEl);
 
-    try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ nome, dia, item })
-      });
+                // Fallback para formato alternativo
+                const sourceWebm = document.createElement('source');
+                sourceWebm.src = filePath.replace(/\.mp4$/i, '.webm');
+                sourceWebm.type = 'video/webm';
+                videoEl.appendChild(sourceWebm);
 
-      status.className = 'status-success';
-      status.innerText = '✅ Adicionado com sucesso!';
-      document.getElementById('item').value = '';
+                // Mensagem de fallback
+                const fallbackText = document.createTextNode(
+                    'Seu navegador não suporta a reprodução deste vídeo. ' +
+                    'Tente baixar o arquivo ou usar outro navegador.'
+                );
+                videoEl.appendChild(fallbackText);
 
-      await carregar();
+                // Tratamento de erro
+                videoEl.addEventListener('error', function() {
+                    console.warn('Erro ao carregar o vídeo:', filePath);
+                    videoEl.style.display = 'none';
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-state';
+                    errorDiv.innerHTML =
+                        '<div class="error-icon">⚠️</div>' +
+                        '<p><strong>Vídeo não encontrado</strong></p>' +
+                        '<p style="font-size:13px;color:#888;">Verifique se o arquivo <code>' +
+                        filePath +
+                        '</code> foi enviado para o repositório.</p>' +
+                        '<p style="font-size:12px;color:#aaa;">Formatos aceitos: .mp4, .webm</p>';
+                    container.appendChild(errorDiv);
+                });
 
-      setTimeout(() => {
-        status.innerText = '';
-      }, 2000);
+                container.appendChild(videoEl);
 
-    } catch (e) {
-      status.className = 'status-error';
-      status.innerText = '❌ Erro ao adicionar';
-    } finally {
-      enviando = false;
-      botao.disabled = false;
-    }
-  }
+                // Barra de info abaixo do vídeo
+                const infoBar = document.createElement('div');
+                infoBar.className = 'video-info-bar';
+                infoBar.innerHTML =
+                    '<span class="info-dot"></span> Reproduzindo: <strong>' + title + '</strong>' +
+                    ' &nbsp;|&nbsp; 🎬 Vídeo local (MP4)';
+                container.appendChild(infoBar);
 
-  carregar();
+            } else if (type === 'youtube') {
+                // ─── YOUTUBE EMBED ─────────────────────────
+                const iframeEl = document.createElement('iframe');
+                const videoId = filePath.trim();
+                iframeEl.src = 'https://www.youtube.com/embed/' + videoId +
+                    '?rel=0&modestbranding=1&showinfo=0';
+                iframeEl.title = title || 'YouTube video';
+                iframeEl.allow =
+                    'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframeEl.allowFullscreen = true;
+                iframeEl.style.cssText =
+                    'width:100%;border:none;display:block;min-height:60vh;height:70vh;border-radius:14px;';
+                iframeEl.loading = 'lazy';
+                container.appendChild(iframeEl);
+
+                // Barra de info
+                const infoBar = document.createElement('div');
+                infoBar.className = 'video-info-bar';
+                infoBar.innerHTML =
+                    '<span class="info-dot"></span> Reproduzindo: <strong>' + title + '</strong>' +
+                    ' &nbsp;|&nbsp; ▶️ YouTube Embed';
+                container.appendChild(infoBar);
+
+            } else if (type === 'pdf') {
+                // ─── PDF ────────────────────────────────────
+                const iframeEl = document.createElement('iframe');
+                iframeEl.src = filePath;
+                iframeEl.title = title || 'Documento PDF';
+                iframeEl.style.cssText =
+                    'width:100%;border:none;display:block;min-height:70vh;height:80vh;border-radius:14px;';
+                iframeEl.loading = 'lazy';
+                // A maioria dos navegadores modernos renderiza PDF inline no iframe
+                iframeEl.setAttribute('type', 'application/pdf');
+                container.appendChild(iframeEl);
+
+                // Barra de info
+                const infoBar = document.createElement('div');
+                infoBar.className = 'video-info-bar';
+                infoBar.innerHTML =
+                    '<span class="info-dot"></span> Visualizando: <strong>' + title + '</strong>' +
+                    ' &nbsp;|&nbsp; 📄 Documento PDF &nbsp;|&nbsp; ' +
+                    '<a href="' + filePath +
+                    '" download style="color:#6c8cff;text-decoration:none;font-weight:500;">⬇ Baixar PDF</a>';
+                container.appendChild(infoBar);
+            }
+
+            viewerContainer.appendChild(container);
+
+            // Scroll suave para o topo da área de visualização
+            contentViewerArea.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ──────────────── EVENTOS DOS BOTÕES ────────────────
+        navButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                const filePath = this.getAttribute('data-file');
+                const title = this.getAttribute('data-title');
+                const icon = this.getAttribute('data-icon');
+
+                // Atualiza estado ativo
+                if (activeButton) {
+                    activeButton.classList.remove('active');
+                }
+                this.classList.add('active');
+                activeButton = this;
+
+                // Renderiza o conteúdo
+                renderContent(type, filePath, title, icon);
+
+                // Em mobile, scrolla a sidebar para mostrar o botão ativo
+                if (window.innerWidth <= 768) {
+                    this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            });
+
+            // Suporte a teclado (Enter/Space)
+            button.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+        // ──────────────── INICIALIZAÇÃO ────────────────
+        // Garante que o placeholder esteja visível ao carregar
+        showPlaceholder();
+
+        console.log('✅ Central de Tutoriais pronta!');
+        console.log('📁 Estrutura esperada no repositório:');
+        console.log('   /videos/  → arquivos .mp4 ou .webm');
+        console.log('   /pdfs/    → arquivos .pdf');
+        console.log('   /index.html → este arquivo');
+        console.log('💡 Dica: Para arquivos de vídeo grandes (>100MB), use data-type="youtube"');
+        console.log('   e coloque o ID do vídeo do YouTube em data-file.');
+    })();
 </script>
-
 </body>
 </html>
